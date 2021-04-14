@@ -24,10 +24,10 @@ public class CursomcApplication implements CommandLineRunner{
 	@Override
 	public void run(String... args) throws Exception {
 
-		Categoria cat1 = new Categoria(null, "INFORMÁTICA");
-		Categoria cat2 = new Categoria(null, "ESCRITÓRIO");
+		Categoria cat1 = new Categoria(null, "outros");
+	//	Categoria cat2 = new Categoria(null, "ESCRITÓRIO");
 		
-		categoriaRepository.saveAll(Arrays.asList(cat1, cat2));
+		categoriaRepository.saveAll(Arrays.asList(cat1));
 		
 	}
 	
