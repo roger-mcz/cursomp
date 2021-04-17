@@ -8,8 +8,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import local.rogerdom.cursomc.domain.Categoria;
+import local.rogerdom.cursomc.domain.Cidade;
+import local.rogerdom.cursomc.domain.Estado;
 import local.rogerdom.cursomc.domain.Produto;
 import local.rogerdom.cursomc.repositories.CategoriaRepository;
+import local.rogerdom.cursomc.repositories.CidadeRepository;
+import local.rogerdom.cursomc.repositories.EstadoRepository;
 import local.rogerdom.cursomc.repositories.ProdutoRepository;
 
 @SpringBootApplication
@@ -20,6 +24,12 @@ public class CursomcApplication implements CommandLineRunner{
 	
 	@Autowired
 	private ProdutoRepository produtoRepository;
+	
+	@Autowired
+	private CidadeRepository cidadeRepository;
+	
+	@Autowired
+	private EstadoRepository estadoRepository;
 	
 	
 	public static void main(String[] args) {
@@ -47,6 +57,19 @@ public class CursomcApplication implements CommandLineRunner{
 		//banco gravado, comentado p/ evitar novos ids... 
 		//categoriaRepository.saveAll(Arrays.asList(cat1, cat2));
 		//produtoRepository.saveAll(Arrays.asList(p1, p2, p3));
+
+		Estado est1 = new Estado(null, "Minas gerais");
+		Estado est2 = new Estado(null, "São Paulo");
+		
+		Cidade cid1 = new Cidade(null, "Uberlândia", est1);
+		Cidade cid2 = new Cidade(null, "São Paulo", est2);
+		Cidade cid3 = new Cidade(null, "Campinas", est2);
+		
+		est1.getCidades().addAll(Arrays.asList(cid1));
+		est2.getCidades().addAll(Arrays.asList(cid2, cid3));
+		
+		estadoRepository.saveAll(Arrays.asList(est1, est2));
+		cidadeRepository.saveAll(Arrays.asList(cid1, cid2, cid3));
 	}
 	
 		
