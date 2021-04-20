@@ -1,5 +1,6 @@
 package local.rogerdom.cursomc;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,13 +13,20 @@ import local.rogerdom.cursomc.domain.Cidade;
 import local.rogerdom.cursomc.domain.Cliente;
 import local.rogerdom.cursomc.domain.Endereco;
 import local.rogerdom.cursomc.domain.Estado;
+import local.rogerdom.cursomc.domain.Pagamento;
+import local.rogerdom.cursomc.domain.PagamentoComBoleto;
+import local.rogerdom.cursomc.domain.PagamentoComCartao;
+import local.rogerdom.cursomc.domain.Pedido;
 import local.rogerdom.cursomc.domain.Produto;
+import local.rogerdom.cursomc.domain.enums.EstadoPagamento;
 import local.rogerdom.cursomc.domain.enums.TipoCliente;
 import local.rogerdom.cursomc.repositories.CategoriaRepository;
 import local.rogerdom.cursomc.repositories.CidadeRepository;
 import local.rogerdom.cursomc.repositories.ClienteRepository;
 import local.rogerdom.cursomc.repositories.EnderecoRepository;
 import local.rogerdom.cursomc.repositories.EstadoRepository;
+import local.rogerdom.cursomc.repositories.PagamentoRepository;
+import local.rogerdom.cursomc.repositories.PedidoRepository;
 import local.rogerdom.cursomc.repositories.ProdutoRepository;
 
 @SpringBootApplication
@@ -41,13 +49,16 @@ public class CursomcApplication implements CommandLineRunner{
 	
 	@Autowired
 	private EnderecoRepository enderecoRepository;
+		
+	@Autowired
+	private PedidoRepository pedidoRepository;
 	
-	
-	
+	@Autowired
+	private PagamentoRepository pagamentoRepository;
+
 	public static void main(String[] args) {
 		SpringApplication.run(CursomcApplication.class, args);
 	}
-
 	
 	@Override
 	public void run(String... args) throws Exception {
@@ -93,6 +104,28 @@ public class CursomcApplication implements CommandLineRunner{
 		
 		clienteRepository.saveAll(Arrays.asList(cli1));
 		enderecoRepository.saveAll(Arrays.asList(end1, end2));
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		
+		//retirado o atributo pagamento do construtor p/ evitar falha 
+		//de dependência no rel. OneToOne
+		//depois que instanciar o pedido, o pagamento será instanciado...
+		Pedido ped1 = new Pedido(null, sdf.parse("30/09/2017 10:32"), cli1, end1);
+		Pedido ped2 = new Pedido(null, sdf.parse("10/10/2017 19:35"), cli1, end2);
+		
+		Pagamento pag1 = new PagamentoComCartao(null, EstadoPagamento.QUITADO, ped1, 5);
+		//valor do pagamento sendo definido
+		ped1.setPagamento(pag1);
+		
+		Pagamento pag2 = new PagamentoComBoleto(null, EstadoPagamento.PENDENTE, ped2, null, sdf.parse("20/10/2017 00:00"));
+		ped2.setPagamento(pag2);
+		
+		cli1.getPedidos().addAll(Arrays.asList(ped1, ped2));
+		
+		pedidoRepository.saveAll(Arrays.asList(ped1, ped2));
+		pagamentoRepository.saveAll(Arrays.asList(pag1, pag2));
+		
+		
 		
 		
 	}
