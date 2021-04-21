@@ -3,10 +3,12 @@ package local.rogerdom.cursomc.services;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import local.rogerdom.cursomc.domain.Categoria;
 import local.rogerdom.cursomc.repositories.CategoriaRepository;
+import local.rogerdom.cursomc.services.exceptions.DataIntegritException;
 import local.rogerdom.cursomc.services.exceptions.ObjectNotFoundException;
 
 @Service
@@ -30,7 +32,14 @@ public class CategoriaService {
 		return repo.save(obj);
 	}
 	
-	
+	public void delete(Integer id) {
+		find(id);
+		try {
+			repo.deleteById(id);			
+		} catch (DataIntegrityViolationException e) {
+			throw new DataIntegritException("Não é possível deletar uma categoria associada a um produto!");
+		}
+	}
 	
 	
 }
