@@ -6,8 +6,8 @@ public class FieldMessage implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	String fieldName;
-	String message;
+	private String fieldName;
+	private String message;
 	
 	public FieldMessage() {
 	}
