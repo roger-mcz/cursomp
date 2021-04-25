@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import local.rogerdom.cursomc.domain.Cidade;
 import local.rogerdom.cursomc.domain.Cliente;
@@ -39,7 +40,7 @@ public class ClienteService {
 		"Objeto não encontrado! Id: " + id + ", Tipo: " + Cliente.class.getName()));
 	}
 	
-	//@Transactional
+	@Transactional
 	public Cliente insert(Cliente obj) {
 		obj.setId(null);
 		repo.save(obj);
@@ -59,7 +60,7 @@ public class ClienteService {
 		try {
 			repo.deleteById(id);			
 		} catch (DataIntegrityViolationException e) {
-			throw new DataIntegritException("Não é possível deletar um cliente pedido!");
+			throw new DataIntegritException("Não é possível deletar um cliente com pedido!");
 		}
 	}
 	
