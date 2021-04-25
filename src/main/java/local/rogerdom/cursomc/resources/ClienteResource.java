@@ -1,5 +1,6 @@
 package local.rogerdom.cursomc.resources;
 
+import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,9 +15,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import local.rogerdom.cursomc.domain.Categoria;
 import local.rogerdom.cursomc.domain.Cliente;
 import local.rogerdom.cursomc.dto.ClienteDTO;
+import local.rogerdom.cursomc.dto.ClienteNewDTO;
 import local.rogerdom.cursomc.services.ClienteService;
 
 @RestController
@@ -30,6 +34,15 @@ public class ClienteResource {
 	public ResponseEntity<Cliente> find(@PathVariable Integer id) {
 		Cliente cliente = service.find(id);
 		return ResponseEntity.ok().body(cliente);
+	}
+	
+	@RequestMapping(method = RequestMethod.POST)
+	public ResponseEntity<Void> insert(@Valid @RequestBody ClienteNewDTO objDto) {
+		Cliente obj = service.fromDTO(objDto);
+		obj = service.insert(obj);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+				.path("/{id}").buildAndExpand(obj.getId()).toUri();
+		return ResponseEntity.created(uri).build();
 	}
 	
 	
